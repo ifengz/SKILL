@@ -1,0 +1,6 @@
+interface:
+  display_name: "Autodebug"
+  short_description: "生成项目专用根因排障、最小修复、复验和红灯收口定时任务合同"
+  default_prompt: "Use $autodebug to generate a heartbeat prompt that reproduces, fixes, verifies, and records this bug ledger."
+policy:
+  allow_implicit_invocation: true

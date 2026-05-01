@@ -1,0 +1,6 @@
+interface:
+  display_name: "Autocheck"
+  short_description: "生成项目专用 E2E/verify 检查定时任务合同"
+  default_prompt: "Use $autocheck to generate a heartbeat prompt that checks this project flow and records evidence."
+policy:
+  allow_implicit_invocation: true

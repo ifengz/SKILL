@@ -15,6 +15,8 @@
 | [`api-connect`](./api-connect/) | 三方 API 连接层、同源 proxy、direct/proxy 迁移、密钥传输和错误归一化。 | provider transport 合同、路由映射、密钥路径、错误码、迁移规则。 | `activeProtocol -> routeKey -> proxyPath` 唯一映射、secret 不进 query/body/log/response。 |
 | [`frontend-auth-helper`](./frontend-auth-helper/) | 内部后台前端权限 Helper，收口 token/user 读取、页面权限、动作权限。 | `ui-auth.js` 合同、权限 key 矩阵、页面接入步骤、前后端验收。 | 页面不直接解析 token、不写死 admin、敏感动作后端硬拦。 |
 | [`sync-shell`](./sync-shell/) | 长同步任务壳，处理 queued/running/stale/cooldown、心跳、轮询和恢复。 | 同步状态机、start/status API、worker 心跳、前端轮询、E2E 矩阵。 | stale/cooldown/超时恢复/旧 worker 写回/重复启动都有验收。 |
+| [`autocheck`](./autocheck/) | 定时跑 E2E / verify / browser / API / data 检查，确认流程是否真实可用。 | heartbeat 检查 prompt、检查矩阵、证据规则、记录路径、通知规则。 | 每项有真实证据、`PASS/FAIL/BLOCKED`、`DONT_NOTIFY/NOTIFY`，不默认修业务 bug。 |
+| [`autodebug`](./autodebug/) | 定时读取当前红灯/bug 账本，复现、定位根因、最小修复、验证和复查。 | heartbeat 修复 prompt、当前红灯规则、根因合同、验证 gate、closeout 记录。 | 先复现再修、先根因再改、最小修复、`FIXED/STILL_FAILING/BLOCKED/FORBIDDEN`。 |
 
 ## 安装方式
 
@@ -30,6 +32,8 @@ cp -R SKILL/shiprocket-api ~/.codex/skills/shiprocket-api
 cp -R SKILL/api-connect ~/.codex/skills/api-connect
 cp -R SKILL/frontend-auth-helper ~/.codex/skills/frontend-auth-helper
 cp -R SKILL/sync-shell ~/.codex/skills/sync-shell
+cp -R SKILL/autocheck ~/.codex/skills/autocheck
+cp -R SKILL/autodebug ~/.codex/skills/autodebug
 ```
 
 安装后，重启或刷新 Codex，让新的 skill 被加载。
@@ -46,6 +50,8 @@ python3 ~/.codex/skills/shiprocket-api/scripts/check_shiprocket_plan.py
 python3 ~/.codex/skills/api-connect/scripts/check_api_connect_contract.py
 python3 ~/.codex/skills/frontend-auth-helper/scripts/check_frontend_auth_plan.py
 python3 ~/.codex/skills/sync-shell/scripts/check_sync_shell_contract.py ~/.codex/skills/sync-shell/assets/sync-contract.template.md
+python3 ~/.codex/skills/autocheck/scripts/check_autocheck_contract.py ~/.codex/skills/autocheck/assets/autocheck-heartbeat.template.md
+python3 ~/.codex/skills/autodebug/scripts/check_autodebug_contract.py ~/.codex/skills/autodebug/assets/autodebug-heartbeat.template.md
 ```
 
 期望结果：
@@ -53,6 +59,8 @@ python3 ~/.codex/skills/sync-shell/scripts/check_sync_shell_contract.py ~/.codex
 - `spotter-api` 输出 `Signature check passed.`
 - `project-design` 输出 `Project design structure check passed.`
 - 其余 skill 输出各自的 `... check passed.`
+- `autocheck` 输出 `Autocheck contract check passed.`
+- `autodebug` 输出 `Autodebug contract check passed.`
 
 ## 使用方式
 
@@ -66,6 +74,8 @@ Use $shiprocket-api to review this Shiprocket shipment integration.
 Use $api-connect to design this provider proxy transport contract.
 Use $frontend-auth-helper to centralize auth checks for these admin pages.
 Use $sync-shell to make this long-running sync job observable and recoverable.
+Use $autocheck to turn this E2E heartbeat into a reusable check contract.
+Use $autodebug to turn this bug-fixing heartbeat into a reusable repair contract.
 ```
 
 ## 质量标准
