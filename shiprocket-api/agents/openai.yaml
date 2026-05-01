@@ -1,0 +1,6 @@
+interface:
+  display_name: "Shiprocket API"
+  short_description: "生成 Shiprocket 订单、发货、AWB 与取件链路的接入交接"
+  default_prompt: "Use $shiprocket-api to harden this Shiprocket order and shipment integration plan."
+policy:
+  allow_implicit_invocation: true

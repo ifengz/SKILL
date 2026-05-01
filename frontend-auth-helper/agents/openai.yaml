@@ -1,0 +1,6 @@
+interface:
+  display_name: "Frontend Auth Helper"
+  short_description: "收口内部后台前端鉴权入口、页面权限、动作权限和后端硬拦"
+  default_prompt: "Use $frontend-auth-helper to design a small stable auth helper for these admin pages."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Lingxing API"
+  short_description: "梳理领星 OpenAPI 与 ERP 报表接口的接入边界和凭证隔离"
+  default_prompt: "Use $lingxing-api to turn this Lingxing integration note into a safe implementation handoff."
+policy:
+  allow_implicit_invocation: true

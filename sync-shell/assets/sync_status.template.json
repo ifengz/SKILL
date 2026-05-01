@@ -1,0 +1,22 @@
+{
+  "found": true,
+  "sync_status": {
+    "job_id": "sync_job_id",
+    "sync_type": "catalog_sync",
+    "resource_key": "global",
+    "status": "running",
+    "progress_stage": "item_detail",
+    "progress_message": "正在补详情（37 / 120）",
+    "queued_at": "2026-05-01T00:00:00Z",
+    "started_at": "2026-05-01T00:00:05Z",
+    "heartbeat_at": "2026-05-01T00:00:25Z",
+    "finished_at": "",
+    "cooldown_until": "",
+    "summary": "",
+    "error_message": "",
+    "progress_metrics": {
+      "current": 37,
+      "total": 120
+    }
+  }
+}

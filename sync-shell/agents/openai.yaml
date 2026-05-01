@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sync Shell"
+  short_description: "设计长同步任务的状态机、心跳、轮询、冷却、超时恢复和验收壳"
+  default_prompt: "Use $sync-shell to harden this long-running sync job into an observable start/status workflow."
+policy:
+  allow_implicit_invocation: true
