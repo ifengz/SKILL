@@ -1,0 +1,39 @@
+# Project
+
+## Goal
+
+## Real Work And Waste
+
+## Users
+
+## V1 Scope
+
+## Non-Goals
+
+## Constraints
+
+## Page Boundaries
+
+| Route | Audience | Data | Actions | States |
+| --- | --- | --- | --- | --- |
+
+## Data Model
+
+## Interface Contracts
+
+## Auth And Permissions
+
+## Async Jobs And Queues
+
+## External Services
+
+## Error Handling
+
+## E2E Acceptance
+
+| Flow | Seed | Steps | Expected Result | Cleanup |
+| --- | --- | --- | --- | --- |
+
+## Implementation Order
+
+## Open Decisions

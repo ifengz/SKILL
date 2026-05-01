@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Design"
+  short_description: "Turn project ideas into build contracts"
+  default_prompt: "Use $project-design to turn a project idea or draft project.md into a build-ready contract."

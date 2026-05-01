@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spotter API"
+  short_description: "Spotter API signing and handoff"
+  default_prompt: "Use $spotter-api to harden a Spotter API integration guide with signing rules and self-checks."
