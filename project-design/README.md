@@ -1,62 +1,62 @@
 # project-design
 
-`project-design` is a Codex skill for turning a rough idea, workflow pain point, or draft `project.md` into a build-ready implementation contract.
+`project-design` 是一个把项目想法、业务流程痛点、粗糙 `project.md` 转成可开工实现合同的 Codex Skill。
 
-It absorbs practical requirements-analysis and system-design structure, but it does not depend on installing external skills.
+它吸收了需求分析和系统设计的有效结构，但不依赖安装外部 skill。
 
-## What It Helps With
+## 它解决什么问题
 
-Use this skill when you need to:
+使用这个 skill，可以帮助你：
 
-- turn a vague request into a concrete V1 plan
-- convert operational pain points into a small product or website scope
-- harden a `project.md` until developers can start
-- define data models, interfaces, page boundaries, permissions, queues, and E2E acceptance
-- review whether a project plan is too broad, too shallow, or missing contracts
+- 把模糊需求收敛成明确 V1
+- 把真实业务痛点转成最小可用产品或网站范围
+- 把 `project.md` 打磨到开发可以开工
+- 定义数据模型、接口合同、页面边界、权限、队列、E2E 验收
+- 审查项目方案是不是太大、太空、缺少关键合同
 
-## Inputs
+## 输入要求
 
-The skill expects one or more of:
+任务中可以提供：
 
-- user request
-- source document or workflow notes
-- existing `project.md`
-- repo constraints
-- users and operators
-- data sources
-- hosting, auth, storage, budget, or API constraints
+- 用户需求
+- 原始文档或业务流程记录
+- 已有 `project.md`
+- 当前仓库约束
+- 用户和后台操作者
+- 数据来源
+- 部署、权限、存储、预算、API 限制
 
-When a decision blocks design, the skill should ask only that decision. It should not ask broad questions that can be resolved by reading local files.
+如果某个决策会阻塞设计，skill 应该只问这个阻塞点。不要问那些可以通过读取本地文件解决的大而空问题。
 
-## Workflow
+## 执行流程
 
-1. Start from the real work and repeated waste.
-2. Use [`references/requirements-analysis.md`](./references/requirements-analysis.md) to define problem, V1 scope, non-goals, constraints, risks, and acceptance signals.
-3. Use [`references/system-design.md`](./references/system-design.md) to define layers, modules, data model, interfaces, permissions, async jobs, external services, and E2E acceptance.
-4. Create or harden `project.md` using [`assets/project.md.template`](./assets/project.md.template).
-5. Review with [`references/design-review-checklist.md`](./references/design-review-checklist.md).
-6. Validate structure with [`scripts/validate_project_design.py`](./scripts/validate_project_design.py).
+1. 从真实工作和重复浪费开始，不先跳到工具或技术栈。
+2. 使用 [`references/requirements-analysis.md`](./references/requirements-analysis.md) 定义问题、V1 范围、非目标、约束、风险和验收信号。
+3. 使用 [`references/system-design.md`](./references/system-design.md) 定义分层、模块、数据模型、接口、权限、异步任务、外部服务和 E2E 验收。
+4. 使用 [`assets/project.md.template`](./assets/project.md.template) 创建或强化 `project.md`。
+5. 使用 [`references/design-review-checklist.md`](./references/design-review-checklist.md) 做收口审查。
+6. 使用 [`scripts/validate_project_design.py`](./scripts/validate_project_design.py) 校验结构。
 
-## Outputs
+## 输出内容
 
-The expected output is an implementation contract containing:
+最终产出应该是一份可开工的项目实现合同，至少包含：
 
-- goal and non-goals
-- V1 scope
-- user flows
-- page boundaries
-- data model
-- API/interface contracts
-- auth and permissions
-- async/queue behavior
-- external service boundaries
-- E2E acceptance matrix
-- implementation order
-- open decisions
+- 目标和非目标
+- V1 范围
+- 用户流程
+- 页面边界
+- 数据模型
+- API / interface contracts
+- auth 和权限
+- async / queue 行为
+- 外部服务边界
+- E2E 验收矩阵
+- 实施顺序
+- 未决问题
 
-## Install
+## 安装方式
 
-Copy the full folder into your Codex skills directory:
+把完整文件夹复制到 Codex skills 目录：
 
 ```bash
 git clone https://github.com/ifengz/SKILL.git
@@ -64,30 +64,30 @@ mkdir -p ~/.codex/skills
 cp -R SKILL/project-design ~/.codex/skills/project-design
 ```
 
-Restart or refresh Codex after installation.
+安装后，重启或刷新 Codex。
 
-## Verify
+## 验证方式
 
-Run:
+运行：
 
 ```bash
 python3 ~/.codex/skills/project-design/scripts/validate_project_design.py ~/.codex/skills/project-design/assets/project.md.template
 ```
 
-Expected result:
+期望结果：
 
 ```text
 Project design structure check passed.
 ```
 
-## Why This Is Not A Shallow Skill
+## 为什么它不是浅层 skill
 
-This skill is designed to produce a build contract, not a planning essay:
+这个 skill 的目标是产出开发合同，不是写一篇项目规划文章：
 
-- `references/requirements-analysis.md` starts from real work and waste.
-- `references/system-design.md` forces data, interface, permission, queue, and E2E boundaries.
-- `assets/project.md.template` gives a concrete output shape.
-- `scripts/validate_project_design.py` checks whether the design has required sections.
-- `references/design-review-checklist.md` defines stop conditions and missing-contract risks.
+- `references/requirements-analysis.md` 要求先从真实工作和浪费开始。
+- `references/system-design.md` 强制落到数据、接口、权限、队列、E2E 边界。
+- `assets/project.md.template` 给出固定交付结构。
+- `scripts/validate_project_design.py` 检查设计文档是否包含必要章节。
+- `references/design-review-checklist.md` 定义停止条件和缺失合同风险。
 
-The skill should not call a design implementation-ready unless a developer can identify the first build step and every V1 feature maps to data, interface, UI, and test coverage.
+如果开发者无法从设计里识别第一个实现步骤，或者 V1 功能没有映射到数据、接口、UI 和测试，这个 skill 不应该判定项目设计已经可开工。
