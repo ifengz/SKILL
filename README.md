@@ -17,6 +17,7 @@
 | [`sync-shell`](./sync-shell/) | 长同步任务壳，处理 queued/running/stale/cooldown、心跳、轮询和恢复。 | 同步状态机、start/status API、worker 心跳、前端轮询、E2E 矩阵。 | stale/cooldown/超时恢复/旧 worker 写回/重复启动都有验收。 |
 | [`autocheck`](./autocheck/) | 定时跑 E2E / verify / browser / API / data 检查，确认流程是否真实可用。 | heartbeat 检查 prompt、检查矩阵、证据规则、记录路径、通知规则。 | 每项有真实证据、`PASS/FAIL/BLOCKED`、`DONT_NOTIFY/NOTIFY`，不默认修业务 bug。 |
 | [`autodebug`](./autodebug/) | 定时读取当前红灯/bug 账本，复现、定位根因、最小修复、验证和复查。 | heartbeat 修复 prompt、当前红灯规则、根因合同、验证 gate、closeout 记录。 | 先复现再修、先根因再改、最小修复、`FIXED/STILL_FAILING/BLOCKED/FORBIDDEN`。 |
+| [`requesting-code-review`](./requesting-code-review/) | 完成任务、重大功能或合并前，派发独立代码评审子 agent。 | Strengths、Issues、Recommendations、Assessment。 | 明确需求和 Git 基线、只读 reviewer、Critical/Important 问题处理、明确合并结论。 |
 
 ## 安装方式
 
@@ -34,6 +35,7 @@ cp -R SKILL/frontend-auth-helper ~/.codex/skills/frontend-auth-helper
 cp -R SKILL/sync-shell ~/.codex/skills/sync-shell
 cp -R SKILL/autocheck ~/.codex/skills/autocheck
 cp -R SKILL/autodebug ~/.codex/skills/autodebug
+cp -R SKILL/requesting-code-review ~/.codex/skills/requesting-code-review
 ```
 
 安装后，重启或刷新 Codex，让新的 skill 被加载。
@@ -76,7 +78,10 @@ Use $frontend-auth-helper to centralize auth checks for these admin pages.
 Use $sync-shell to make this long-running sync job observable and recoverable.
 Use $autocheck to turn this E2E heartbeat into a reusable check contract.
 Use $autodebug to turn this bug-fixing heartbeat into a reusable repair contract.
+Use $requesting-code-review to review the changes against the requirements and the specified Git baseline.
 ```
+
+`requesting-code-review` 包含 `SKILL.md` 和 `code-reviewer.md` 提示模板。安装不会自动创建 Hook；由调用它的 agent 派发只读 reviewer。调用时指定真实任务基线，不要用 `HEAD~1` 代替任务范围；有未提交修改时，还需明确 staged、unstaged 和 untracked 的审查范围。
 
 ## 质量标准
 
