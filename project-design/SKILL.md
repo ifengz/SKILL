@@ -32,11 +32,13 @@ This skill absorbs the useful structure of requirements analysis and system desi
    - Use `assets/project.md.template` when creating a new document.
    - Preserve existing project-specific decisions; do not expand scope unless the user asks.
    - Make assumptions explicit and avoid hidden global dependencies.
+   - Include only the contracts needed to make the next implementation step unambiguous; do not generate a full document set by default.
 
 5. Validate the design.
    - Use `references/design-review-checklist.md`.
    - If a `project.md` file exists, run `python3 scripts/validate_project_design.py <path-to-project.md>`.
    - Fix missing sections before claiming the plan is implementation-ready.
+   - If the completion bar fails, stop at design repair instead of moving into an implementation plan or code.
 
 ## Output
 
@@ -63,5 +65,7 @@ Do not call the design ready until:
 - every V1 feature maps to data, interface, UI, and test coverage
 - non-goals prevent obvious scope creep
 - auth, permissions, external services, and async jobs have explicit boundaries
+- AI, automation, sensitive data, and irreversible external actions have review, logging, and prohibition boundaries when they exist
 - E2E acceptance is concrete enough to pass or fail
+- the first build slice, validation strategy, secrets handling, and migration strategy are identified or explicitly deferred
 - unresolved decisions are listed instead of hidden in prose

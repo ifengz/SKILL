@@ -58,6 +58,17 @@ State:
 - what is admin-only
 - how internal-only AI or automation is gated
 
+### AI And Automation Boundaries
+
+Use this section only when the system includes AI, agents, scraping, message sending, external platform actions, or irreversible automation:
+
+- human review checkpoints
+- prohibited actions
+- output validation rule
+- audit log fields
+- rate, quota, or cost guard
+- rollback or manual recovery path
+
 ### Async And Queues
 
 Use this section when a task can outlive a request:
