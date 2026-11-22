@@ -1,95 +1,82 @@
 ---
 name: requesting-code-review
-description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+description: Request an independent, read-only review of a diff, PR, branch, or completed change, checking correctness, bug-fix evidence, security-sensitive surfaces, task scope, behavioral tests, removal safety, and unnecessary complexity against the task baseline. Use before merging, after a substantial change or bug fix, or when a fresh diagnosis is needed.
 ---
 
 # Requesting Code Review
 
-Dispatch a code reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history.
+Dispatch one independent reviewer with bounded context, not the session history. Review is not authorization to implement fixes, install tools, commit, push, deploy, or manage worktrees. User instructions and applicable project rules govern scope and verification.
 
-**Core principle:** Review early, review often.
+## When to Use
 
-## When to Request Review
+- At the review checkpoints required by the project, after a substantial logical unit, or before an authorized merge.
+- When the user requests a review, a baseline before refactoring, or a fresh diagnosis of a difficult fix.
+- Respect project exemptions for small mechanical edits; do not make every edit a full audit.
 
-**Mandatory:**
-- After each task in subagent-driven development
-- After completing major feature
-- Before merge to main
+## Establish the Review Boundary
 
-**Optional but valuable:**
-- When stuck (fresh perspective)
-- Before refactoring (baseline check)
-- After fixing complex bug
+Record the task's starting commit and working-tree state before implementation when possible. Reuse that baseline at review time; do not substitute `HEAD~1`, assume `main`, or silently use the current HEAD as the task start.
 
-## How to Request
+Give the reviewer:
 
-**1. Get git SHAs:**
+- The requested outcome, acceptance criteria, applicable rules, allowed paths, and explicit non-goals.
+- The starting baseline, current HEAD, and initial dirty changes with their ownership. A commit alone does not capture pre-existing uncommitted work.
+- The task-owned changed paths/hunks, relevant callers and contracts, and test/evidence paths with their actual results.
+- The current authorization: review-only or implementation already authorized; any permitted validation commands and side effects.
+
+Redact secrets, credentials, tokens, and personal data; pass paths or redacted excerpts instead of raw values. Mark any input that cannot be established as `UNKNOWN`; the reviewer must treat it as a coverage gap, not infer it. The implementation summary is context, not evidence.
+
+For an ordinary Git worktree, use these complementary views, scoped to the task-owned paths:
+
 ```bash
-BASE_SHA=$(git rev-parse HEAD~1)  # or: git merge-base origin/main HEAD
-HEAD_SHA=$(git rev-parse HEAD)
+git status --short
+git diff --stat "$BASE_SHA" "$HEAD_SHA" -- <task-paths>
+git diff "$BASE_SHA" "$HEAD_SHA" -- <task-paths> # committed task changes
+git diff --cached -- <task-paths>                # current staged changes
+git diff -- <task-paths>                         # current unstaged changes
+git diff "$BASE_SHA" -- <task-paths>            # final tracked state vs baseline
+git ls-files --others --exclude-standard -- <task-paths>
+git merge-base --is-ancestor "$BASE_SHA" "$HEAD_SHA" || echo "baseline is not an ancestor of HEAD"
 ```
 
-**2. Dispatch code reviewer subagent:**
+If the baseline is not an ancestor, the range may include unrelated history; use the actual merge base or an explicit patch, and say which you used.
 
-Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](code-reviewer.md)
+Read relevant untracked files separately: `git diff` omits them. Do not stage files to make them visible. Compare with the initial dirty snapshot to avoid attributing someone else's changes to this task. If the baseline or ownership is missing, establish it from evidence or ask; disclose the resulting coverage limit rather than inventing a baseline. For non-Git files, use saved before/after contents and an explicit file list instead of creating a repository.
 
-**Placeholders:**
-- `{DESCRIPTION}` - Brief summary of what you built
-- `{PLAN_OR_REQUIREMENTS}` - What it should do
-- `{BASE_SHA}` - Starting commit
-- `{HEAD_SHA}` - Ending commit
+Recheck HEAD and task-owned file state before reporting. If either changed during review, stop and reconcile the review target with the coordinator; do not issue a verdict on mixed versions.
 
-**3. Act on feedback:**
-- Fix Critical issues immediately
-- Fix Important issues before proceeding
-- Note Minor issues for later
-- Push back if reviewer is wrong (with reasoning)
+## Dispatch
 
-## Example
+Fill [code-reviewer.md](code-reviewer.md) with the bounded inputs above. Use a fresh-context reviewer (`fork_turns="none"` where supported), with no recursive delegation. Do not pass the implementer's session history, self-assessment, or recommended verdict. The reviewer inspects the product of the work, not the implementer's preferred conclusion.
 
-```
-[Just completed Task 2: Add verification function]
+Pass the absolute skill directory with the review packet so the reviewer can resolve its references independently of the project working directory. Select relevant references using the table below; the reviewer must also check the actual diff for additional triggers. Do not load every checklist for every change.
 
-You: Let me request code review before proceeding.
+## Reference Routing
 
-BASE_SHA=$(git log --oneline | grep "Task 1" | head -1 | cut -d' ' -f1)
-HEAD_SHA=$(git rev-parse HEAD)
+| Changed surface or review question | Read |
+| --- | --- |
+| Trust boundaries, auth, user-controlled input/output, outbound requests, files, secrets, dependencies, CI/build configuration, resource limits, shared writes, destructive operations, or removal of a safety guard | [Security and reliability](references/security-checklist.md) |
+| Changed code introduces a hazard shape: swappable same-type arguments, boolean behavior flags, falsy defaults, hidden defaults, empty-filter destructive calls, un-awaited work, or leftover focused/skipped tests | [Hazard shapes](references/hazard-shapes.md) |
+| Removal, deprecation, replacement, exports, routes, jobs, configuration, schema, or a claim that code is unused | [Removal safety](references/removal-safety.md) |
+| Bug fix, regression, flaky behavior, or a claim that a reported symptom is resolved | [Bug-fix review](references/bug-fix-review.md) |
+| Unclear severity, competing contracts, weak evidence, speculative simplification, or uncertainty whether a checklist pattern is a real defect | [Review calibration](references/review-calibration.md) |
 
-[Dispatch code reviewer subagent]
-  DESCRIPTION: Added verifyIndex() and repairIndex() with 4 issue types
-  PLAN_OR_REQUIREMENTS: Task 2 from docs/superpowers/plans/deployment-plan.md
-  BASE_SHA: a7981ec
-  HEAD_SHA: 3df7661
+Local contracts, callers, actual runtime versions, and evidence are the primary comparison points. External standards explain a failure mechanism; they do not override the user's scope or prove that a vulnerability is present. The reference files are self-contained and do not depend on other review skills remaining installed.
 
-[Subagent returns]:
-  Strengths: Clean architecture, real tests
-  Issues:
-    Important: Missing progress indicators
-    Minor: Magic number (100) for reporting interval
-  Assessment: Ready to proceed
+If independent delegation is unavailable, disclose that limitation and provide a clearly labeled self-review if useful; never claim independence that did not occur.
 
-You: [Fix progress indicators]
-[Continue to Task 3]
-```
+## Act on Findings
 
-## Common Rationalizations
+- Verify findings against the actual contracts and callers. Push back with evidence on incorrect findings.
+- In review-only mode, report findings and stop. Severity never grants permission to edit.
+- With implementation authorization, fix confirmed blockers only within the agreed scope, then repeat the affected checks. Ask before expanding scope or changing architecture or contracts.
+- Apply a YAGNI/KISS standard (the Ponytail standard when that skill is available): prefer the smallest complete change; accept simplification only when its benefit is concrete, behavior is preserved, and it can be verified. Do not remove validation, error handling, permissions, or required evidence to make a diff smaller.
+- Optional improvements are not blockers. Stop when acceptance criteria are met; do not turn review into a repository-wide cleanup.
 
-| Excuse | Reality |
-|--------|---------|
-| "I'll just review the diff myself instead of dispatching a reviewer" | You're the coordinator — reviewing the diff inline burns the context window you need to keep driving the work. Dispatch a reviewer subagent: the diff and the evaluation live in its context, and only the findings come back to you. |
-| "The reviewer needs my whole session history to understand the change" | Hand it precisely crafted context, never your session's history. That keeps the reviewer on the work product, not your thought process. |
+## Evidence and Completion
 
-## Red Flags
+The reviewer template incorporates selected ub-mode ideas: root-cause fixes, behavior-focused tests, and verified refactoring. This is a review adaptation, not installation or execution of upstream ub-mode or its companion tools.
 
-**Never:**
-- Skip review because "it's simple"
-- Ignore Critical issues
-- Proceed with unfixed Important issues
-- Argue with valid technical feedback
+Keep source inspection, executed tests, development E2E, deployment, and live business evidence separate. A review can inspect evidence but cannot retroactively prove that a test was written first. Report missing evidence as unverified, not as passed or as proof that no test exists.
 
-**If reviewer wrong:**
-- Push back with technical reasoning
-- Show code/tests that prove it works
-- Request clarification
-
-See template at: [code-reviewer.md](code-reviewer.md)
+Every report must answer three questions in plain terms: whether the change is minimal and causal, whether it stayed within the requested scope, and what evidence proves the original problem is gone. Name the reviewed revision (commit/tree hash or file fingerprint) and the uncovered paths or hunks in the report. Return actionable findings first, then optional simplifications, verification limits, and a scoped verdict. A favorable review does not authorize merging, pushing, or deployment.
