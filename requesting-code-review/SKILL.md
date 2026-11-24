@@ -9,9 +9,16 @@ Dispatch one independent reviewer with bounded context, not the session history.
 
 ## When to Use
 
-- At the review checkpoints required by the project, after a substantial logical unit, or before an authorized merge.
-- When the user requests a review, a baseline before refactoring, or a fresh diagnosis of a difficult fix.
-- Respect project exemptions for small mechanical edits; do not make every edit a full audit.
+Two triggers, and no others by default:
+
+- **After a fix that took real digging** — the change spans several places, the cause was unclear when work started, or an earlier attempt did not hold.
+- **After a new feature or path lands** — a new page, route, job, worker, integration, or a new rule inside an existing one.
+
+Not a trigger: wording and rule-text edits, formatting, single-line changes, dependency bumps, or any diff whose blast radius is readable off the file list. Respect project exemptions; do not make every edit an audit, and do not turn this into a repository-wide sweep.
+
+When unsure, ask one question: could this change be wrong in a way the test suite would not notice? If yes, review it. If no, skip it.
+
+The user asking for a review, a baseline before refactoring, or a fresh diagnosis of a difficult fix is also a trigger.
 
 ## Establish the Review Boundary
 
@@ -67,7 +74,7 @@ If independent delegation is unavailable, disclose that limitation and provide a
 
 ## Boundaries With Other Review Tools
 
-This skill reports; it does not fix. When the host also ships `code-review`, `security-review`, or `simplify`, route by what the user asked for. Do not assume a tool exists because it is named here; if one is absent, skip it silently rather than imitating it by hand.
+By default this skill reports; it does not fix. Fixing inside this flow needs the explicit authorization described under Act on Findings. When the host also ships `code-review`, `security-review`, or `simplify`, route by what the user asked for. Do not assume a tool exists because it is named here; if one is absent, skip it silently rather than imitating it by hand.
 
 | The user wants | Use |
 | --- | --- |
