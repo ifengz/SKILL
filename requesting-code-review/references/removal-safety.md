@@ -10,6 +10,10 @@ Name the behavior and the exact symbol, route, table/field, package, configurati
 
 For a hunk that removes or weakens a guard, read the introducing commit with `git log -L <start>,<end>:<file>` or `git blame`. A line added for a bug, CVE, incident, or ticket is a guard until the author explains why the original cause is gone. A hunk that silently reverts a recent commit is either a lost fix or a deliberate rollback; establish which. Where history is absent (squashed import, vendored file, first commit), say so rather than inferring intent.
 
+For a claim that code is redundant, obsolete, or safe to simplify, use `git log -S <identifier>` (or `-S` with a distinctive substring) rather than `blame`: it finds the commit that introduced the content even after the line has moved. Record that commit and whether its message states a reason.
+
+A proposal to delete or simplify code whose introducing commit names no reason — or which arrived with the repository's initial import — is an **open question**, not a finding. The absence of a stated reason is not evidence of redundancy, and a reviewer who removes on that basis deletes incident fixes silently.
+
 ## Consumer Evidence
 
 For each applicable channel, record the inspected scope and findings:

@@ -65,12 +65,25 @@ Local contracts, callers, actual runtime versions, and evidence are the primary 
 
 If independent delegation is unavailable, disclose that limitation and provide a clearly labeled self-review if useful; never claim independence that did not occur.
 
+## Boundaries With Other Review Tools
+
+This skill reports; it does not fix. When the host also ships `code-review`, `security-review`, or `simplify`, route by what the user asked for. Do not assume a tool exists because it is named here; if one is absent, skip it silently rather than imitating it by hand.
+
+| The user wants | Use |
+| --- | --- |
+| An independent, read-only second opinion and a scoped verdict | this skill |
+| Findings fixed in the working tree, or inline PR comments | host `code-review`, which may support `--fix` |
+| A security-specific audit rather than a diff review | host `security-review` |
+| Behavior-preserving cleanup of code that is already correct | host `simplify`, or the Ponytail standard when installed |
+
+Never chain them inside one review. Finishing a read-only pass and then applying `--fix` turns a report the user approved into a change they never saw; when findings warrant edits, stop and let the user pick the route.
+
 ## Act on Findings
 
 - Verify findings against the actual contracts and callers. Push back with evidence on incorrect findings.
 - In review-only mode, report findings and stop. Severity never grants permission to edit.
 - With implementation authorization, fix confirmed blockers only within the agreed scope, then repeat the affected checks. Ask before expanding scope or changing architecture or contracts.
-- Apply a YAGNI/KISS standard (the Ponytail standard when that skill is available): prefer the smallest complete change; accept simplification only when its benefit is concrete, behavior is preserved, and it can be verified. Do not remove validation, error handling, permissions, or required evidence to make a diff smaller.
+- Apply a YAGNI/KISS standard (or the Ponytail standard when that skill is installed; do not go looking for it otherwise): prefer the smallest complete change; accept simplification only when its benefit is concrete, behavior is preserved, and it can be verified. Do not remove validation, error handling, permissions, or required evidence to make a diff smaller.
 - Optional improvements are not blockers. Stop when acceptance criteria are met; do not turn review into a repository-wide cleanup.
 
 ## Evidence and Completion

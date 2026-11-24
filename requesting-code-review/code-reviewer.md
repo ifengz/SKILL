@@ -46,6 +46,7 @@ Before checking the diff, resolve the reference routing table in this skill's `S
 - For schema, migration, or persisted-format changes, check mixed-version reads/writes, backfill, idempotency, and rollback. Compatibility scaffolding for a format with no released producer or consumer is dead-on-arrival complexity; verify against the last released version before concluding.
 - When no build/typecheck evidence is supplied, verify that new identifiers, config keys, routes, and assets resolve; do not assume a name exists because it appears in the diff.
 - Treat specification silence as a reason to examine foreseeable harm, not permission to invent features. Explain the concrete affected scenario and reconcile it with explicit non-goals and frozen contracts. A concern about the plan is separate from an implementation defect.
+- Judge structural against patch by what the next occurrence costs, not by stated intent: ask how many places must change when the same class of problem appears again. One named seam is structural. The same edit repeated at several call sites is a patch, and should be reported as one even when it fixes today's symptom. When the cause sits in a third-party kernel, a remote DOM, or platform behavior, removing it is not within the reviewer's reach; the finding then is whether the failure was corralled behind one replaceable seam.
 
 ### Change Shape and Scope
 
@@ -69,19 +70,20 @@ Before checking the diff, resolve the reference routing table in this skill's `S
 
 - Prefer the smallest complete change that meets the contract. Identify unnecessary abstractions, speculative options, redundant state, or avoidable branching only with a concrete maintenance or correctness benefit.
 - Similar syntax is not enough to merge code: verify shared semantics, ownership, and change cadence. Do not collapse distinct business rules to improve a duplication score.
-- Flag the same classification, threshold, ordering, or eligibility rule computed independently in two places: summary vs executor, preview vs action, or score vs explanation. Require one source of truth or evidence they cannot drift; do not demand a shared abstraction for merely similar syntax.
+- Flag the same classification, threshold, ordering, or eligibility rule computed independently in two places: summary vs executor, preview vs action, or score vs explanation. Require one source of truth or evidence they cannot drift. The test is the served object, not the syntax: one rule serving one object must be single-sourced, while one rule serving different objects (two tenants, two stores, two pages) is isolation, and merging it creates the regression rather than fixing one. Do not demand a shared abstraction for merely similar syntax.
 - Keep clear, local code local. Do not demand a redesign, new dependency, shared component, or domain-model change for a small fix.
 - Suggest behavior-preserving simplification within scope. Never trade away validation, error handling, security, accessibility, or required evidence for fewer lines. Separate optional simplification from confirmed defects.
 
-### Optional Quality Reports
+### Runtime Evidence Instead of Metric Scores
 
-Crapper, Dryer, and Mutator are optional evidence, not mandatory installed dependencies. Do not install or run them merely because this template mentions them. If absent, mark them not run; absence alone is not a blocker unless the task explicitly requires them.
+Do not ask for coverage, duplication, or mutation scores. A score states that code ran; it does not state that the behavior was correct, and on a repository without that tooling the request degrades into a permanent "not run" line. Ask instead for artifacts from an actual execution, in this order:
 
-When reports are supplied, verify their tool version, source revision or working-tree fingerprint, target files, configuration, command, execution status, and exclusions. A stale or failed measurement is not a passing gate.
+- The command that was run, the revision it ran against, its exit status, and the pass/fail counts.
+- The real entry point that was exercised — the scheduler tick, the CLI invocation, the browser route — rather than a unit-level stand-in for it.
+- The observable product a user would see: emitted message text, log lines, counts, screenshots, state rows before and after.
+- For anything touching a live or third-party system: which environment, which account, store, or tenant, and when.
 
-- **Crapper:** Separate genuine low coverage from failed tests, missing tools, or unavailable coverage. A generated snapshot is not proof that coverage collection succeeded. Do not force every function below a numeric threshold without an agreed gate and a behavior-preserving reason.
-- **Dryer:** Scores identify structural candidates, not mandatory abstractions. Check the configured threshold; upstream skill guidance and tool defaults can differ. Exit zero does not prove no duplication exists.
-- **Mutator:** Inspect uncovered/skipped sites and survivor meaning, including equivalent mutations. Distinguish assertion-detected failures from timeouts, compilation failures, or infrastructure failures counted as killed. A high kill rate does not by itself prove adequate tests or E2E coverage. Do not demand removal of business behavior merely because it lacks coverage.
+State plainly what was not executed. A green suite that never reached the changed path is not evidence for this change, and "the tests pass" does not name the behavior that was observed.
 
 ## Findings and Verdict
 

@@ -95,3 +95,15 @@ Use $requesting-code-review to review the changes against the requirements and t
 - 可复用资料：必要时提供 `references/`、`scripts/`、`assets/`
 
 如果一个 skill 只有通用 checklist 或空泛建议，不应该放进这个仓库。
+
+## 许可与来源
+
+本仓库采用 MIT 许可，见 [LICENSE](./LICENSE)。
+
+`requesting-code-review` 不是原创方案：它的流程骨架与部分判定标准来自多份公开发布的评审流程、官方评审插件的公开做法，以及上游 `ub-mode` 一系的 skill，经裁剪、合并、重写，并按「局部修改后的回归评审」这一用途收窄。文中保留的 `Ponytail` 只作概念引用——安装了该 skill 时按其标准执行，未安装则直接按 YAGNI/KISS 判断；本仓库不包含也不分发其实现。
+
+早期版本曾引用 `Crapper`、`Dryer`、`Mutator` 三类度量工具。它们依赖覆盖率、重复度、变异测试等本地无法保证的工具链，在多数仓库里只会变成一行「未运行」，因此这些要求已替换为「从实际运行中提取证据」的条目。
+
+其余 skill 为本仓库原创。
+
+如果上游作者认为署名、措辞或条款需要调整，请开 issue。
