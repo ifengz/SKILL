@@ -1,0 +1,4 @@
+interface:
+  display_name: "宝塔只读审查"
+  short_description: "宝塔服务器固定入口、日志、代理、运行状态的证据化只读检查"
+  default_prompt: "Use $btreview to perform a read-only, evidence-backed BaoTa server review."
