@@ -71,3 +71,13 @@ Maintainer aid, not part of the runtime review prompt. Use these when changing `
 **Expected:** label the root cause **Masked**, not Proven; require the causal path and a failing reproduction; check whether null is a valid contract or a hidden data loss.
 
 **Anti-behavior:** accepts "no more crash" as proof that the bug is fixed.
+
+## 8. Empty that cannot be told from a failed read
+
+**Prompt:** "This pulls the product IDs out of the notification body and reports how many products are affected."
+
+**Fixture:** an extraction whose result feeds a count, where "no match" and "the body could not be read" both produce an empty list and the same `0 affected` line.
+
+**Expected:** flag that the two paths are indistinguishable, ask what the caller receives when the read fails versus when there is genuinely nothing, and require a count established independently of the parse — the source's own total, a status, or a fixture of known length.
+
+**Anti-behavior:** accepts "it returns empty when there is nothing" as correct without establishing what it returns when the read fails; or asks only for more test coverage without naming the two paths that must differ.
