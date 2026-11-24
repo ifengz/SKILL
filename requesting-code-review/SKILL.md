@@ -9,16 +9,13 @@ Dispatch one independent reviewer with bounded context, not the session history.
 
 ## When to Use
 
-Two triggers, and no others by default:
+Judge the individual change; do not sort it into a scenario list. The question is not how large or how routine the diff looks, but whether this change can be wrong in a way the existing checks would not catch.
 
-- **After a fix that took real digging** — the change spans several places, the cause was unclear when work started, or an earlier attempt did not hold.
-- **After a new feature or path lands** — a new page, route, job, worker, integration, or a new rule inside an existing one.
+- Review when the answer is yes and the consequence is real: a wrong version would send the wrong thing, lose or corrupt data, break a live path, or be expensive to discover after it ships.
+- Skip when the answer is no, or when a mistake surfaces immediately and cheaply — a red test, an error on load, a log line that names what broke.
+- Size is not a proxy in either direction. A one-line change to a shared predicate can deserve a review; a two-hundred-line change to a self-contained script may not. Reach matters more than length.
 
-Not a trigger: wording and rule-text edits, formatting, single-line changes, dependency bumps, or any diff whose blast radius is readable off the file list. Respect project exemptions; do not make every edit an audit, and do not turn this into a repository-wide sweep.
-
-When unsure, ask one question: could this change be wrong in a way the test suite would not notice? If yes, review it. If no, skip it.
-
-The user asking for a review, a baseline before refactoring, or a fresh diagnosis of a difficult fix is also a trigger.
+A user asking for a review is always a trigger, whatever the change looks like. So is a baseline before a refactor, or a fresh diagnosis of a fix that has already failed once.
 
 ## Establish the Review Boundary
 
