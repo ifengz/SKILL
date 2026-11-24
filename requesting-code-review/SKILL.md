@@ -60,7 +60,7 @@ Pass the absolute skill directory with the review packet so the reviewer can res
 | Changed surface or review question | Read |
 | --- | --- |
 | Trust boundaries, auth, user-controlled input/output, outbound requests, files, secrets, dependencies, CI/build configuration, resource limits, shared writes, destructive operations, or removal of a safety guard | [Security and reliability](references/security-checklist.md) |
-| Changed code introduces a hazard shape: swappable same-type arguments, boolean behavior flags, falsy defaults, hidden defaults, empty-filter destructive calls, un-awaited work, or leftover focused/skipped tests | [Hazard shapes](references/hazard-shapes.md) |
+| Changed code introduces a hazard shape: swappable same-type arguments, boolean behavior flags, falsy defaults, hidden defaults, empty-filter destructive calls, un-awaited work, leftover focused/skipped tests, or an empty result indistinguishable from a failed read | [Hazard shapes](references/hazard-shapes.md) |
 | Removal, deprecation, replacement, exports, routes, jobs, configuration, schema, or a claim that code is unused | [Removal safety](references/removal-safety.md) |
 | Bug fix, regression, flaky behavior, or a claim that a reported symptom is resolved | [Bug-fix review](references/bug-fix-review.md) |
 | Unclear severity, competing contracts, weak evidence, speculative simplification, or uncertainty whether a checklist pattern is a real defect | [Review calibration](references/review-calibration.md) |
